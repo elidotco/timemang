@@ -4,6 +4,7 @@ import {
   createUser,
   createCompany,
   createUserProfile,
+  LogUserIn,
 } from "../services/authServices";
 
 export const companySignUp = async (
@@ -40,5 +41,27 @@ export const companySignUp = async (
     return res.status(500).json({
       error: error.message,
     });
+  }
+};
+
+// Log the user IN
+export const userLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email, password } = req.body;
+  try {
+    const { user, session } = await LogUserIn(email, password);
+    res.status(200).json({
+      message: "Login successful",
+      user,
+      session,
+    });
+    console.log(user);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    console.log("hello");
   }
 };

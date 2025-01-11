@@ -1,5 +1,4 @@
 // services/authService.ts
-import { User } from "@supabase/supabase-js";
 import { supabase } from "../config/dbConnect";
 
 export const createUser = async (email: string, password: string) => {
@@ -66,4 +65,37 @@ export const createUserProfile = async (userId: string, companyId: number) => {
     throw new Error(error.message);
   }
   return data;
+};
+
+export const LogUserIn = async (
+  email: string,
+  password: string
+): Promise<{ user: any; session: any }> => {
+  try {
+    // Call Supabase to sign in the user with email and password
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    // Handle errors returned by Supabase
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    // Check if user and session data exist
+    if (!data.user || !data.session) {
+      throw new Error("Authentication failed. Please try again.");
+    }
+
+    // Return user and session data on success
+    return {
+      user: data.user,
+      session: data.session,
+    };
+  } catch (err: any) {
+    // Log error for debugging and throw it to the caller
+    console.error("Login error:", err.message);
+    throw new Error(err.message || "An unknown error occurred during login.");
+  }
 };
