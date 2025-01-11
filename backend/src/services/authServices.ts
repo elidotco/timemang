@@ -99,3 +99,14 @@ export const LogUserIn = async (
     throw new Error(err.message || "An unknown error occurred during login.");
   }
 };
+
+export const logUserOut = async () => {
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    console.error("Error signing out:", error.message);
+    throw new Error(error.message);
+  }
+
+  console.log("User logged out successfully");
+};
